@@ -1,0 +1,50 @@
+@page "/pizzas"
+@using BlazorPizzaApp.Models
+
+<PageTitle>Our Pizzas</PageTitle>
+
+<h1>🍕 Blazing Pizzas</h1>
+<p>Choose from our delicious selection of pizzas!</p>
+
+<div class="pizza-cards">
+    @foreach (var pizza in pizzas)
+    {
+        <div class="pizza-card">
+            <div class="pizza-image">
+                <img src="@pizza.ImageUrl" alt="@pizza.Name" />
+            </div>
+            <div class="pizza-info">
+                <h3>@pizza.Name</h3>
+                <p class="description">@pizza.Description</p>
+                <div class="pizza-details">
+                    @if (pizza.Vegetarian)
+                    {
+                        <span class="badge vegetarian">🌱 Vegetarian</span>
+                    }
+                    @if (pizza.Vegan)
+                    {
+                        <span class="badge vegan">🥬 Vegan</span>
+                    }
+                </div>
+                <div class="pizza-footer">
+                    <span class="price">KSh @pizza.BasePrice.ToString("N0")</span>
+                    <button class="btn btn-primary">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<footer class="app-footer">
+    <p><strong>Created by Joel Ndiba Mwaura | Kenya 🇰🇪</strong></p>
+    <p>&copy; @DateTime.Now.Year - Blazor Pizza App</p>
+</footer>
+
+@code {
+    private List<Pizza> pizzas = new();
+
+    protected override void OnInitialized()
+    {
+        pizzas = PizzaService.GetPizzas();
+    }
+}
