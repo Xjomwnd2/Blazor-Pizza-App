@@ -1,7 +1,83 @@
-﻿@page "/"
+@page "/"
+@inject PizzaService PizzaService
+@inject OrderState OrderState
+@implements IDisposable
 
-<h1>Hello, world!</h1>
+<PageTitle>Blazing Pizza</PageTitle>
 
-Welcome to your new app.
+<div class="main">
+    <div class="main-content">
+        <ul class="pizza-cards">
+            @if (specials != null)
+            {
+                @foreach (var special in specials)
+                {
+                    <li @onclick="@(() => OrderState.ShowConfigurePizzaDialog(special))" 
+                        style="background-image: url('@special.ImageUrl')">
+                        <div class="pizza-info">
+                            <span class="title">@special.Name</span>
+                            @special.Description
+                            <span class="price">£@special.GetFormattedBasePrice()</span>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
 
-<Counter IncrementAmount="10" />
+    <div class="sidebar">
+        @if (OrderState.Order.Pizzas.Any())
+        {
+            <div class="order-contents">
+                <h2>Your Order</h2>
+
+                @foreach (var configuredPizza in OrderState.Order.Pizzas)
+                {
+                    <ConfiguredPizzaItem Pizza="configuredPizza" 
+                                        OnRemoved="@(() => OrderState.RemoveConfiguredPizza(configuredPizza))" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-cart">Your order is empty</div>
+        }
+
+        <div class="order-total @(OrderState.Order.Pizzas.Any() ? "" : "hidden")">
+            <span>Total:</span>
+            <span class="total-price">£@OrderState.Order.GetFormattedTotalPrice()</span>
+            <button class="btn btn-warning" disabled="@(!OrderState.Order.Pizzas.Any())" 
+                    @onclick="PlaceOrder">
+                Order >
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (OrderState.ShowingConfigureDialog)
+{
+    <ConfigurePizzaDialog 
+        Pizza="OrderState.ConfiguringPizza!"
+        OnCancel="OrderState.CancelConfigurePizzaDialog"
+        OnConfirm="OrderState.ConfirmConfigurePizzaDialog" />
+}
+
+@code {
+    List<PizzaSpecial>? specials;
+
+    protected override async Task OnInitializedAsync()
+    {
+        specials = await PizzaService.GetSpecialsAsync();
+    }
+
+    async Task PlaceOrder()
+    {
+        var order = await PizzaService.PlaceOrderAsync(OrderState.Order);
+        OrderState.ResetOrder();
+        // TODO: Navigate to order confirmation page
+    }
+
+    public void Dispose()
+    {
+    }
+}
