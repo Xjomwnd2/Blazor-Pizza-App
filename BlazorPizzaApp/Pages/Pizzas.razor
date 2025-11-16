@@ -1,9 +1,8 @@
 @page "/pizzas"
-@using BlazorPizzaApp.Models
 
 <PageTitle>Our Pizzas</PageTitle>
 
-<h1>üçï Blazing Pizzas</h1>
+<h1>ÌΩï Blazing Pizzas</h1>
 <p>Choose from our delicious selection of pizzas!</p>
 
 <div class="pizza-cards">
@@ -19,11 +18,11 @@
                 <div class="pizza-details">
                     @if (pizza.Vegetarian)
                     {
-                        <span class="badge vegetarian">üå± Vegetarian</span>
+                        <span class="badge vegetarian">Ìº± Vegetarian</span>
                     }
                     @if (pizza.Vegan)
                     {
-                        <span class="badge vegan">ü•¨ Vegan</span>
+                        <span class="badge vegan">Ìµ¨ Vegan</span>
                     }
                 </div>
                 <div class="pizza-footer">
@@ -36,15 +35,15 @@
 </div>
 
 <footer class="app-footer">
-    <p><strong>Created by Joel Ndiba Mwaura | Kenya üá∞üá™</strong></p>
+    <p><strong>Created by Joel Ndiba Mwaura | Kenya Ì∑∞Ì∑™</strong></p>
     <p>&copy; @DateTime.Now.Year - Blazor Pizza App</p>
 </footer>
 
 @code {
     private List<Pizza> pizzas = new();
-
+    
     protected override void OnInitialized()
     {
-        pizzas = PizzaService.GetPizzas();
+        pizzas = BlazorPizzaApp.Models.PizzaService.GetPizzas();
     }
 }
