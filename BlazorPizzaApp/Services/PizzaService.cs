@@ -1,3 +1,5 @@
+using BlazorPizzaApp.Models;
+
 namespace BlazorPizzaApp.Services
 {
     public class PizzaService
